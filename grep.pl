@@ -10,6 +10,8 @@ my %key = (
 	'B' => 0,
 	'C' => 0
 );
+
+print "Hello";
 # шаблон
 my $regexp = $ARGV[$#ARGV];
 
@@ -21,13 +23,13 @@ GetOptions ( \%key,
 	'i'  ,
 	'v'  ,
 	'F'  ,
-	'n'  
+	'n'
 ) or die "Incorrect key";
 
 # функция для сравнения с учетом ключей
 my $regexpTrue;
 
-if ( $key{'i'} && $key{'F'} ) { 
+if ( $key{'i'} && $key{'F'} ) {
 	$regexpTrue = sub {
 		my $a = shift;
 		chomp $a;
@@ -35,7 +37,7 @@ if ( $key{'i'} && $key{'F'} ) {
 	};
 }
 elsif ( $key{'F'} ) {
-	$regexpTrue = sub { 
+	$regexpTrue = sub {
 		my $a = shift;
 		chomp $a;
 		return 1 + index( $a, $regexp );
@@ -62,7 +64,7 @@ my $down = $key{'A'} > $key{'C'} ? $key{'A'} : $key{'C'};
 my $downCheck; # проверка выведения нижеследующих строк при наличии down
 my $prev = 0; # последняя выведенная строчка
 my @queue; # очередь строк
-my @queueNum; # очередь номеров строк 	
+my @queueNum; # очередь номеров строк
 #  функция для печати строк с номером
 sub printLine {
 	my ($foo, $bar) = @_;
@@ -75,7 +77,7 @@ while (<STDIN>) {
 	if ( $key{'c'} ) {
 		$n++ if ( $key{'v'} ? !$regexpTrue->($_) : $regexpTrue->($_) );
 	}
-	# если нет ключей А В С v 
+	# если нет ключей А В С v
 	elsif ( !$key{'A'} && !$key{'B'} && !$key{'C'} ) {
 		printLine ($_, $.) if ( $key{'v'} ? !$regexpTrue->($_) : $regexpTrue->($_) );
 	} else {
@@ -83,16 +85,16 @@ while (<STDIN>) {
 		if ( $regexpTrue->($_) ) {
 			# шаблон совпал - проверяем очередь и печатаем
 			if ( scalar @queue > 0 ) {
-				print "--\n" if ( $prev && 
+				print "--\n" if ( $prev &&
 						  $queueNum[0] - $prev > 1 );
 				for ( 0..$#queue ) {
 					printLine ($queue[$_], $queueNum[$_]);
 				}
 			} else {
-				print "--\n" if ( $prev && 
+				print "--\n" if ( $prev &&
 								  $. - $prev > 1 );
-			} 
-			printLine ($_, $.); 
+			}
+			printLine ($_, $.);
 			$prev = $.;
 			$downCheck = $down; # устанавливаем downcheck для печати нижнего отступа
 			@queue = ();
@@ -104,14 +106,14 @@ while (<STDIN>) {
 			$prev = $.;
 			$downCheck--;
 		}
-		#если есть верхний отступ - заполняем очередь 
+		#если есть верхний отступ - заполняем очередь
 		elsif ( $up ) {
 			if ( scalar @queue < $up ) {
 				push @queue, $_;
 				push @queueNum, $.;
 			} else {
-				shift @queue;    	
-				shift @queueNum;	
+				shift @queue;
+				shift @queueNum;
 				push @queue, $_;
 				push @queueNum, $.;
 			}
